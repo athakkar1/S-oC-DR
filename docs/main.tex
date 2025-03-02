@@ -1,0 +1,83 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+%Template version as of 6/27/2024
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{S(oC)DR: Interfacing Between a System-on-Chip and Software Defined Radio\\
+}
+
+\author{\IEEEauthorblockN{Ajay Thakkar}
+\IEEEauthorblockA{\textit{Electrical and Computer Engineering} \\
+\textit{Stevens Institute of Technology}\\
+Hoboken, New Jersey \\
+athakka5@stevens.edu \\
+Advised by Professor Bernard Yett}
+}
+
+\maketitle
+
+\begin{abstract}
+Placeholder
+\end{abstract}
+
+\section{Introduction}
+Many modern spectrum tasks require portability and computational power to solve complex signal processing tasks in dynamic environments.
+Applications like remote sensing and tactical communications require self sufficient RF systems that can operate on the edge while employing
+modern spectrum tasks such as spectrum sensing and signal classification. Creating such devices usually requires
+custom hardware and software that are tailored to the application, which is both a costly and non-reusable solution. Technology such as
+Software Defined Radios (SDR) and System-on-Chips (SoC) can be leveraged in these applications to form fast, reprogrammable, portable, and cost effective systems.
+
+SDRs are flexible RF systems that allow for digital reconfigurability to change its operational parameters while running.
+Their novelty lies in the interface between a General-Purpose Processor (GPP) and an RF front end, allowing the user to digitally control the front end's
+operating frequency, gain, sampling rate, etc. This GPP also allows for a personal computer to communicate with the system to send commands and retrieve return
+data for further processing. Software such as GNU Radio and MATLAB include packages to communicate with popular SDRs as well as signal processing and visualization
+blocks that can be tailored to a wide variety of RF tasks. This SDR ecosystem has been used extensively in modern research for prototyping RF systems,
+like Hu et al. utilizing the Pluto SDR platform as well as MATLAB's deep learning toolbox to implement a Convolutional Neural Network (CNN) 
+for signal classification of the Pluto SDR's return signal. However, since many of these studies use a personal computer for their data processing which have a large form factor 
+and utilize a lot of power, these systems are not viable for field testing or deployment. 
+
+To that end, many of these same signal processing applications such as CNNs have been
+implemented on programmable logic platforms like SoCs. SoCs contain both Programmable Logic (PL) and a Processing System (PS), essentially 
+integrating both FPGA fabric and general purpose processors on the same chip and allowing them to work in tandem. Amin et al. were able to implement a CNN for signal classification
+on programmable logic, achieving an accuracy of 99.98\% at 84139 frames per second with only 4.4W of power consumption, showing how aforementioned SDR research can utilize
+SoCs to lower power consumption and increase portability while still retaining the same processing power as a personal computer. This paper endeavors to create an interface
+between commercial SoCs and SDRs to provide a proof-of-concept for low-cost, low power, portable RF systems that can operate on the edge and be used in settings other than a lab environment.
+
+The novel contributions of this paper can be summarized as follows:
+\begin{itemize}
+  \item Generate a PetaLinux image that can be deployed on the ZYBO SoC Development Board with necessary libraries, packages, and SDR utilities
+  \item Create a hardware platform in Vivado that can transfer HackRF I/Q data to and from the PS
+  \item Compile a custom interface to be used in the Linux image which can control the HackRF, interface with the hardware platform, and communicate the data over a UDP server
+  \item Write an upstream program that can connect to the UDP server on the ZYBO, collect and visualize data, and send commands for controlling the HackRF
+\end{itemize}
+
+This paper is organized as follows: Section 2 provides a formally defined problem statement that is specific to the proof-of-concept scope of this project.
+Section 3 presents the work done in the project, including block diagrams, photos of the lab setup, and the hardware and software that was created for the project.
+
+\section{Problem Statement}
+Most RF systems which include a software defined radio rely on personal computers and accompanying software for controlling the SDR and performing complex signal processing tasks.
+However, for applications such as tactical communications or remote sensing, portability and low power is required for these systems to be viable in field testing and deployment.
+Therefore, this paper aims to show the replacement of a personal computer with an SoC, which serves as a low power, low cost, and portable alternative with the same computational capability.
+
+The Zybo is a cheap Zynq SoC development board made by Digilent that features Artix FPGA fabric, dual-core ARM A9 processors, 
+and different peripherals that can be used for embedded applications. These Zynq SoC’s can run embedded linux with the help of Xilinx’s PetaLinux toolkit, 
+allowing for community SDR applications like PySDR and the HackRF API to be leveraged when controlling the SDR. A user can also leverage the FPGA fabric within the 
+SoC to create fast parallelized signal processing capabilities that not even a desktop can achieve. 
+To this end, I propose S(oC)DR, a Zynq-based framework that abstracts the complexities of interfacing with and 
+controlling the HackRF while enabling efficient parallel signal processing.
+
+\nocite{*}
+\bibliographystyle{ieeetr}  % Use IEEE format
+\bibliography{refs}
+
+\end{document}

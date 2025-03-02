@@ -1,0 +1,49 @@
+\begin{thebibliography}{1}
+
+\bibitem{9721283}
+D.~M. Molla, H.~Badis, L.~George, and M.~Berbineau, ``Software defined radio
+  platforms for wireless technologies,'' {\em IEEE Access}, vol.~10,
+  pp.~26203--26229, 2022.
+
+\bibitem{https://doi.org/10.1155/2022/7901714}
+Z.~Zhang, W.~Zhao, Y.~Huang, J.~An, and Y.~Zhu, ``Implementation of doa
+  estimation system based on hackrf one,'' {\em International Journal of
+  Antennas and Propagation}, vol.~2022, no.~1, p.~7901714, 2022.
+
+\bibitem{10625021}
+Y.~Manasa, D.~Dharun, U.~Vamshi, and M.~Gowtham, ``Implementation of ofdm using
+  gnu radio with hackrf one and rtl-sdr,'' in {\em 2024 IEEE International
+  Conference on Information Technology, Electronics and Intelligent
+  Communication Systems (ICITEICS)}, pp.~1--8, 2024.
+
+\bibitem{9445729}
+U.~M. Butt, S.~A. Khan, A.~Ullah, A.~Khaliq, P.~Reviriego, and A.~Zahir,
+  ``Towards low latency and resource-efficient fpga implementations of the
+  music algorithm for direction of arrival estimation,'' {\em IEEE Transactions
+  on Circuits and Systems I: Regular Papers}, vol.~68, no.~8, pp.~3351--3362,
+  2021.
+
+\bibitem{9598312}
+H.~Nguyen and S.~Nguyen, ``Fpga-based implementation and evaluation of realtime
+  ofdm phase compensation in 5g,'' in {\em 2021 International Conference on
+  Advanced Technologies for Communications (ATC)}, pp.~131--134, 2021.
+
+\bibitem{9408823}
+Y.~Xia, Z.~Ma, and Z.~Huang, ``Over-the-air radar emitter signal classification
+  based on sdr,'' in {\em 2021 6th International Conference on Intelligent
+  Computing and Signal Processing (ICSP)}, pp.~403--408, 2021.
+
+\bibitem{10794303}
+R.~A. Amin, M.~S. Amran~Hossain, L.~T. Schmid, V.~Wiese, and R.~Obermaisser,
+  ``Power efficient real-time traffic signal classification for autonomous
+  driving using fpgas,'' in {\em 2024 6th International Conference on
+  Communications, Signal Processing, and their Applications (ICCSPA)},
+  pp.~1--5, 2024.
+
+\bibitem{9687958}
+L.~Hu, H.~Jiang, R.~Lu, and C.~Liu, ``Signal classification in real-time based
+  on sdr using convolutional neural network,'' in {\em 2021 IEEE 2nd
+  International Conference on Information Technology, Big Data and Artificial
+  Intelligence (ICIBA)}, vol.~2, pp.~893--898, 2021.
+
+\end{thebibliography}
