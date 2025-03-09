@@ -9,11 +9,12 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{S(oC)DR: Interfacing Between a System-on-Chip and Software Defined Radio\\
+\title{S(oC)DR: A Low Cost, SoC-Based Software Defined Radio Platform\\
 }
 
 \author{\IEEEauthorblockN{Ajay Thakkar}
@@ -27,31 +28,38 @@ Advised by Professor Bernard Yett}
 \maketitle
 
 \begin{abstract}
-Placeholder
+Software Defined Radios (SDRs) and System-on-Chips (SoCs) are widely used in modern RF applications due to their flexibility, reconfigurability, and computational efficiency. However, most SDR platforms rely on personal computers for processing, making them unsuitable for portable and low-power applications such as tactical communications and remote sensing. While commercially available SoC-integrated SDR solutions exist, they are often cost-prohibitive, and research-focused implementations are typically built on custom or proprietary hardware, limiting accessibility.
+
+This paper presents S(oC)DR, a low-cost, open-source SoC/SDR development platform designed to enable portable and self-sufficient RF systems. Using the Digilent Zybo Z7-20, a Xilinx Zynq-based SoC development board, and the HackRF One, an open-source SDR, this system demonstrates key functionalities necessary for field-deployable SDR applications. These include SDR parameter tuning, real-time signal processing using programmable logic, and networked data transmission.
+  
+By integrating SDR control and signal processing within an SoC, S(oC)DR provides a compact, power-efficient alternative to traditional PC-based SDR setups while remaining affordable for researchers and developers. This work aims to bridge the gap between expensive commercial solutions and inaccessible research prototypes, offering a viable platform for advancing portable RF technology.
 \end{abstract}
 
 \section{Introduction}
 Many modern spectrum tasks require portability and computational power to solve complex signal processing tasks in dynamic environments.
 Applications like remote sensing and tactical communications require self sufficient RF systems that can operate on the edge while employing
-modern spectrum tasks such as spectrum sensing and signal classification. Creating such devices usually requires
-custom hardware and software that are tailored to the application, which is both a costly and non-reusable solution. Technology such as
-Software Defined Radios (SDR) and System-on-Chips (SoC) can be leveraged in these applications to form fast, reprogrammable, portable, and cost effective systems.
+modern algorithms such as spectrum sensing and signal classification. Creating such devices usually requires
+custom hardware and software that are tailored to the application, which is both a costly and non-reusable solution \cite{10880410}. Technology such as
+Software Defined Radios (SDR) and System-on-Chips (SoC) can be leveraged in these applications to form fast, reprogrammable, portable, and cost effective systems \cite{9721283}.
 
 SDRs are flexible RF systems that allow for digital reconfigurability to change its operational parameters while running.
 Their novelty lies in the interface between a General-Purpose Processor (GPP) and an RF front end, allowing the user to digitally control the front end's
 operating frequency, gain, sampling rate, etc. This GPP also allows for a personal computer to communicate with the system to send commands and retrieve return
-data for further processing. Software such as GNU Radio and MATLAB include packages to communicate with popular SDRs as well as signal processing and visualization
+data for further processing \cite{9721283}. Software such as GNU Radio and MATLAB include packages to communicate with popular SDRs as well as signal processing and visualization
 blocks that can be tailored to a wide variety of RF tasks. This SDR ecosystem has been used extensively in modern research for prototyping RF systems,
 like Hu et al. utilizing the Pluto SDR platform as well as MATLAB's deep learning toolbox to implement a Convolutional Neural Network (CNN) 
-for signal classification of the Pluto SDR's return signal. However, since many of these studies use a personal computer for their data processing which have a large form factor 
+for signal classification of the Pluto SDR's return signal \cite{9687958}. However, since many of these studies use a personal computer for their data processing which have a large form factor 
 and utilize a lot of power, these systems are not viable for field testing or deployment. 
 
 To that end, many of these same signal processing applications such as CNNs have been
 implemented on programmable logic platforms like SoCs. SoCs contain both Programmable Logic (PL) and a Processing System (PS), essentially 
-integrating both FPGA fabric and general purpose processors on the same chip and allowing them to work in tandem. Amin et al. were able to implement a CNN for signal classification
-on programmable logic, achieving an accuracy of 99.98\% at 84139 frames per second with only 4.4W of power consumption, showing how aforementioned SDR research can utilize
-SoCs to lower power consumption and increase portability while still retaining the same processing power as a personal computer. This paper endeavors to create an interface
-between commercial SoCs and SDRs to provide a proof-of-concept for low-cost, low power, portable RF systems that can operate on the edge and be used in settings other than a lab environment.
+integrating both FPGA fabric and general purpose processors on the same chip. The processors can execute sequential logic and control
+many peripherals that are baked into the chip, such as dedicated UART hardware and GPIO pins. The FPGA fabric executes
+parallel logic which can implement tasks such as convolutions or Fast Fourier Transforms much faster than sequential processors.
+For example, Amin et al. were able to implement a CNN for signal classification on programmable logic, achieving an accuracy of 99.98\% at 84139 
+frames per second with only 4.4W of power consumption, showing how aforementioned SDR research can utilize
+SoCs to lower power consumption and increase portability while still retaining the same processing power as a personal computer \cite{10794303}. 
+To that end, the focus of this paper is showing a real example of using an SoC with an SDR, and making this technology more accessible to research and commercial applications.
 
 The novel contributions of this paper can be summarized as follows:
 \begin{itemize}
@@ -65,16 +73,21 @@ This paper is organized as follows: Section 2 provides a formally defined proble
 Section 3 presents the work done in the project, including block diagrams, photos of the lab setup, and the hardware and software that was created for the project.
 
 \section{Problem Statement}
-Most RF systems which include a software defined radio rely on personal computers and accompanying software for controlling the SDR and performing complex signal processing tasks.
-However, for applications such as tactical communications or remote sensing, portability and low power is required for these systems to be viable in field testing and deployment.
-Therefore, this paper aims to show the replacement of a personal computer with an SoC, which serves as a low power, low cost, and portable alternative with the same computational capability.
+SoCs and SDRs have already intersected in the commercial and research sectors. In the research realm, compact and low power systems that
+leverage software defined radio and SoCs also exist. The CROWN project funded by the European Defense agencies is a 2-18 GHz capable system
+that features Xilinx RFSoCs and is labeled as a small-scale, multi-functional RF system. However, due to existing research in this space
+frequently using custom hardware for its application or being tied to government funding, this technology is rarely available for purchase
+for others to develop and test on \cite{10880410}. In the commercial sector, Ettus Research creates Universal Software Radio Peripheral (USRP) SDRs
+which includes an SoC to allow for low-power, edge applications. For example, the USRP E310 is a 70 MHz to 6 GHz software defined radio that 
+includes a Xilinx Zynq-based SoC, and is labeled as a "portable stand-alone software defined radio platform designed for field deployment".
+While this shows the existance of commercially available SoC/SDR platforms, the cost of these systems range from 5000 all the way up to 20,000 dollars for various
+Ettus products, limiting the availability for researchers to prototype and test on \cite{ettus_e310}. This paper endeavours to provide an easily accessible and low cost
+SoC/SDR development platform to help progress capabilities in portable, self-sufficient RF systems.
 
-The Zybo is a cheap Zynq SoC development board made by Digilent that features Artix FPGA fabric, dual-core ARM A9 processors, 
-and different peripherals that can be used for embedded applications. These Zynq SoC’s can run embedded linux with the help of Xilinx’s PetaLinux toolkit, 
-allowing for community SDR applications like PySDR and the HackRF API to be leveraged when controlling the SDR. A user can also leverage the FPGA fabric within the 
-SoC to create fast parallelized signal processing capabilities that not even a desktop can achieve. 
-To this end, I propose S(oC)DR, a Zynq-based framework that abstracts the complexities of interfacing with and 
-controlling the HackRF while enabling efficient parallel signal processing.
+For the scope of this project, the viability of this low cost development platform will be shown through certain key functionalities that existing solutions have.
+Most RF applications require the ability to retrieve raw data from the SDR, tune parameters such as gain, center frequency, and sampling rate in real-time, 
+implement user defined signal processing chains onto oncoming data, and transmit data over a network \cite{10880410, 9721283}. By integrating these features into an accessible and cost-effective SoC/SDR platform, 
+this project aims to lower the barrier to entry for researchers, students, and engineers looking to develop and test self-sufficient and portable RF systems.
 
 \nocite{*}
 \bibliographystyle{ieeetr}  % Use IEEE format
