@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{10880410}
 J.~C.~M. Fernandez, A.~C. Garcia, J.~C. Soriano, J.~L.~G. de~la Haba,
@@ -29,5 +29,36 @@ R.~A. Amin, M.~S. Amran~Hossain, L.~T. Schmid, V.~Wiese, and R.~Obermaisser,
 \bibitem{ettus_e310}
 {Ettus Research}, ``Usrp e310,'' 2025.
 \newblock Accessed: March 9, 2025.
+
+\bibitem{hackrf_docs}
+{Great Scott Gadgets}, ``Hackrf documentation.''
+  \url{https://hackrf.readthedocs.io/en/latest/}, n.d.
+\newblock Accessed: 2025-03-23.
+
+\bibitem{hackrf_repo}
+{Great Scott Gadgets}, ``Hackrf - software defined radio.''
+  \url{https://github.com/greatscottgadgets/hackrf/tree/master}, n.d.
+\newblock Accessed: 2025-03-23.
+
+\bibitem{digilent_zybo_manual}
+{Digilent, Inc.}, ``Zybo reference manual.''
+  \url{https://digilent.com/reference/programmable-logic/zybo/reference-manual},
+  n.d.
+\newblock Accessed: 2025-03-23.
+
+\bibitem{amd_petalinux_ug1144}
+{AMD, Inc.}, {\em PetaLinux Tools Reference Guide (UG1144)}, 2023.
+\newblock Accessed: 2025-03-23.
+
+\bibitem{digilent_petalinux_zybo}
+{Digilent, Inc.}, ``Petalinux-zybo repository.''
+  \url{https://github.com/Digilent/Petalinux-Zybo/tree/master}, n.d.
+\newblock Accessed: 2025-03-23.
+
+\bibitem{meta_sdr_layer}
+{OpenEmbedded Project}, ``meta-sdr layer — openembedded layer index.''
+  \url{https://layers.openembedded.org/layerindex/branch/master/layer/meta-sdr/},
+  n.d.
+\newblock Accessed: 2025-03-23.
 
 \end{thebibliography}
