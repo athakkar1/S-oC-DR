@@ -1,22 +1,25 @@
 #include <hackrf.h>
+#include <semaphore.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <sys/types.h>
 #include <unistd.h>
-size_t bytes_to_write = 1000000;
-FILE* fptr;
+
+#include "shared_memory.h"
+char* shared_block;
+sem_t* sem_cons;
+sem_t* sem_prod;
 
 int rx_callback(hackrf_transfer* transfer) {
   size_t byte_size;
   printf("Bytes Arrived: %d\n", transfer->buffer_length);
   printf("Valid Length: %d\n", transfer->valid_length);
-  if (transfer->valid_length >= bytes_to_write) {
-    byte_size = bytes_to_write;
-    bytes_to_write = 0;
-  } else {
-    byte_size = transfer->valid_length;
-    bytes_to_write -= transfer->valid_length;
-  }
-  fwrite(transfer->buffer, 1, byte_size, fptr);
+  sem_wait(sem_cons);
+  memcpy(shared_block, transfer->buffer, BLOCK_SIZE);
+  sem_post(sem_prod);
   return 0;
 }
 
@@ -29,7 +32,23 @@ int main(int argc, char** argv) {
   uint32_t lna_gain = 32;
   uint32_t vga_gain = 40;
   uint32_t allowed_baseband_filter;
-  fptr = fopen("out.iq", "w");
+  shared_block = attach_memory_block(FILENAME, BLOCK_SIZE);
+
+  sem_prod = sem_open(SEM_PRODUCER_NAME, 0);
+  if (sem_prod == SEM_FAILED) {
+    fprintf(stderr, "semaphore creation failed\n");
+    return 0;
+  }
+
+  sem_cons = sem_open(SEM_CONSUMER_NAME, 0);
+  if (sem_prod == SEM_FAILED) {
+    fprintf(stderr, "semaphore creation failed\n");
+    return 0;
+  }
+
+  if (shared_block == NULL) {
+    fprintf(stderr, "shared_block creation failed:\n");
+  }
   result = hackrf_init();
   if (result != HACKRF_SUCCESS) {
     fprintf(stderr, "hackrf_init failed: %s (%d)\n", hackrf_error_name(result),
@@ -108,5 +127,8 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
   hackrf_exit();
-  fclose(fptr);
+  detach_memory_block(FILENAME);
+  destroy_memory_block(FILENAME);
+  sem_close(sem_prod);
+  sem_close(sem_cons);
 }
