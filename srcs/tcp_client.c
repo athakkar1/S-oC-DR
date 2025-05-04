@@ -17,7 +17,7 @@ char *shared_block;
 int main(int argc, char **argv) {
   uint16_t port = 2000;
   struct sockaddr_in servaddr; /* server address */
-  shared_block = attach_memory_block(FILENAME, BLOCK_SIZE);
+  shared_block = attach_memory_block(FILENAME, BLOCK_SIZE + PARAM_SIZE);
   sem_unlink(SEM_CONSUMER_NAME);
   sem_unlink(SEM_PRODUCER_NAME);
 
@@ -36,6 +36,10 @@ int main(int argc, char **argv) {
   if (shared_block == NULL) {
     fprintf(stderr, "shared_block creation failed\n");
   }
+  for (int i = 0; i < PARAM_SIZE; i++) {
+    *(shared_block + BLOCK_SIZE + i) = 0;
+  }
+  printf("i was able to reference and init params of the shared memory");
 
   int sock = socket(AF_INET, SOCK_STREAM, 0);
   if (sock < 0) {
@@ -59,6 +63,8 @@ int main(int argc, char **argv) {
       fprintf(stderr, "send failed\n");
       return 0;
     }
+    recv(sock, shared_block + BLOCK_SIZE, PARAM_SIZE, MSG_DONTWAIT);
+    printf("i am getting past this\n");
     sem_post(sem_cons);
   }
 
