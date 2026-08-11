@@ -40,7 +40,7 @@ fi
 cd "$PROJ"
 
 # Source Petalinux
-source "$SETTINGS" 2>/dev/null
+source "$SETTINGS"
 
 echo ""
 echo "Petalinux 2017.4 ready."
