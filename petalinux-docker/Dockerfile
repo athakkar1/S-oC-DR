@@ -84,7 +84,6 @@ RUN sed -i 's/do_install:append/do_install_append/' \
 
 # Apply SOCDR project config customizations
 COPY project-files/config project-spec/configs/config
-COPY project-files/rootfs_config project-spec/configs/rootfs_config
 COPY project-files/petalinux-image.bbappend project-spec/meta-user/recipes-core/images/petalinux-image.bbappend
 COPY project-files/system-user.dtsi project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
 
