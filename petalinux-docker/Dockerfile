@@ -88,8 +88,10 @@ COPY project-files/petalinux-image.bbappend project-spec/meta-user/recipes-core/
 COPY project-files/system-user.dtsi project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
 
 # Remove the stock rootfs_config so petalinux-config generates a fresh one
-# (the Digilent default conflicts when libhackrf/rtl-sdr are added as NEW packages)
 RUN rm -f project-spec/configs/rootfs_config
+
+# Make builder own the project so it can write build/ at runtime
+RUN chown -R builder:builder /opt/Petalinux-Zybo
 
 # ============================================================
 # Entrypoint
@@ -99,6 +101,9 @@ COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /opt/Petalinux-Zybo/Zybo
+
+# BitBake/Yocto refuses to run as root
+USER builder
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["bash"]
