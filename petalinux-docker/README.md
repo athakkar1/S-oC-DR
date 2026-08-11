@@ -2,55 +2,44 @@
 
 Self-contained, reproducible Petalinux 2017.4 build environment for the SOCDR project.
 
-## You only need two things:
+## TL;DR
 
-1. **Docker**  
-2. **Petalinux 2017.4 installer** (`petalinux-v2017.4-final-installer.run`) from the [Xilinx Download Archive](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-design-tools/archive.html) (requires Xilinx account)
-
-Place the installer in this directory, then:
+**Prerequisites:** Docker + `petalinux-v2017.4-final-installer.run` placed in this directory.
 
 ```bash
+# 1. Build the Docker image (~30 min, ~30 GB)
 docker build -t socdr-build .
-docker run -it --rm socdr-build
-```
 
-## Inside the Container
+# 2. Run interactively (persists build artifacts to host)
+mkdir -p ~/socdr-build-output
+docker run -it --rm \
+    -v ~/socdr-build-output/build:/opt/Petalinux-Zybo/Zybo/build \
+    -v ~/socdr-build-output/images:/opt/Petalinux-Zybo/Zybo/images \
+    socdr-build
 
-The Petalinux project is at `/opt/Petalinux-Zybo/Zybo/`. You land there automatically.
-
-```bash
-# 1. Generate build configuration (interactive, one-time)
+# 3. Inside the container: one-time interactive config (~5 min)
 petalinux-config
-# Navigate and exit to save. This also processes the hardware description (HDF).
+#    Verify: Yocto Settings → User Layers → 0 = ${PROOT}/project-spec/meta-sdr
+#                         User Layers → 1 = /opt/pkg/.../meta-qt4
+#    Exit to save
 
-# 2. Build the project
+# 4. Inside the container: build (~2-4 hours first time)
 petalinux-build
 
-# 3. Package boot image
+# 5. Inside the container: package boot image
 petalinux-package --boot --force \
     --fsbl images/linux/zynq_fsbl.elf \
     --fpga images/linux/system_wrapper.bit \
     --u-boot
 ```
 
-Verify user layers in petalinux-config:
-- `Yocto Settings → User Layers → 0` = `${PROOT}/project-spec/meta-sdr`
-- `Yocto Settings → User Layers → 1` = `/opt/pkg/petalinux/components/yocto/source/arm/layers/meta-qt4`
+**Build artifacts** land in `~/socdr-build-output/` on your host:
+- `build/` — Yocto build tree (cached for faster rebuilds)
+- `images/linux/` — `BOOT.BIN`, `image.ub`, `rootfs.ext4`, etc. (flash these to SD card)
 
-## External Volume (optional)
+**Subsequent builds** (with cached `build/`): just run step 2, then step 4.
 
-To persist build artifacts outside the container:
-
-```bash
-mkdir -p build-output
-docker run -it --rm -v "$(pwd)/build-output:/opt/Petalinux-Zybo/Zybo/build" socdr-build
-```
-
-Or mount your own variant of the project:
-
-```bash
-docker run -it --rm -v /path/to/your/project:/project socdr-build
-```
+---
 
 ## What the Dockerfile Sets Up
 
