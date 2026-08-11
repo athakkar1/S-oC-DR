@@ -17,7 +17,7 @@ Zynq-SDR
       - Fixed a bunch of errors that honestly I cannot name all of, but notably including meta-qt4 in installed Yocto layers, adding meta-qt4 and meta-sdr to user layers in petalinux-config, fixing broken fetch links, hardcoding python-io instead of python-io-native in a recipe, etc.
       - Building rtl-sdr and hackrf libs seem to work, I need to decide whether to continue trying to build gnuradio, or to just get these libs on the board and write an interface to the SDR myself.
     - Hand-Written Interface
-      - GNURadio build is a bust. Too many version/dependency conflicts. Even if I fixed the compile errors I am getting right now who knows how many more there will be. The other option would be to upgrade the Digilent project to 2023/2024 standards, but I cannot be fucked learning how Yocto works and write all these bitbake recipes myself. Maybe a project for myself, but IDC for now.
+      - GNURadio build is a bust. Too many version/dependency conflicts. Even if I fixed the compile errors I am getting right now who knows how many more there will be. The other option would be to upgrade the Digilent project to 2023/2024 standards, but the learning curve for Yocto and writing all those bitbake recipes from scratch is steep. Maybe a project for later, but not a priority now.
       - On the other hand, I got the libhackrf and rtl-sdr support software to build. HackRF comes with some helpful binaries for debug, version info, firmware flashing, etc., as well as the libhackrf pre-compiled libraries that I can leverage in writing my own interface. Hopefully this means I don't need to include any more dependencies and any code I write can just compile out of the box.
       - Now, I need to figure out how to add built packages/libraries into rootfs and just get all the libraries/binaries onto the rootfs and see if they work.
       - I also really need to research HackRF docs to see what building an interface will look like.
@@ -34,11 +34,11 @@ Zynq-SDR
 - Resources
   - makeZynq software developers guide: [https://docs.amd.com/r/en-US/ug821-zynq-7000-swdev](https://docs.amd.com/r/en-US/ug821-zynq-7000-swdev)
   - BSP and libraries overview (xilinx HAL documentation): [https://docs.amd.com/r/en-US/oslib_rm](https://docs.amd.com/r/en-US/oslib_rm)
-  - zybo petalinux bsp release: [https://digilent.com/reference/software/petalinux/start?srsltid=AfmBOoq6opcVTQKC6MQ4xMvDz8r5vLUt36NBnjheI-KECojten7uKawR](https://nam02.safelinks.protection.outlook.com/?url=https%3A%2F%2Fdigilent.com%2Freference%2Fsoftware%2Fpetalinux%2Fstart%3Fsrsltid%3DAfmBOoq6opcVTQKC6MQ4xMvDz8r5vLUt36NBnjheI-KECojten7uKawR&data=05%7C02%7Cathakka5%40stevens.edu%7C06812fe230264ed3962408dd31b7deb4%7C8d1a69ec03b54345ae21dad112f5fb4f%7C0%7C0%7C638721387968883682%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=f0NLkQ0nupIHUEPcWbykVx9bAL3VkWkl%2BqKFFRWWvgs%3D&reserved=0)
+   - zybo petalinux bsp release: [https://digilent.com/reference/software/petalinux/start](https://digilent.com/reference/software/petalinux/start)
   - zybo vivado block diagram for linux: [https://github.com/Digilent/Zybo-base-linux](https://github.com/Digilent/Zybo-base-linux)
-  - zybo petalinux readme: [https://github.com/Digilent/Petalinux-Zybo/blob/master/README.md](https://nam02.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2FDigilent%2FPetalinux-Zybo%2Fblob%2Fmaster%2FREADME.md&data=05%7C02%7Cathakka5%40stevens.edu%7C06812fe230264ed3962408dd31b7deb4%7C8d1a69ec03b54345ae21dad112f5fb4f%7C0%7C0%7C638721387968905869%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=Q8y5hG9brlBGljoHQ18exGq8TOpfti3NOkVIO5L7qmE%3D&reserved=0)
-  - meta-sdr is an openembed layer that can be used in yocto: [https://github.com/balister/meta-sdr](https://nam02.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Fbalister%2Fmeta-sdr&data=05%7C02%7Cathakka5%40stevens.edu%7C06812fe230264ed3962408dd31b7deb4%7C8d1a69ec03b54345ae21dad112f5fb4f%7C0%7C0%7C638721387968922324%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=NyxOfPHhtRJvP6XO%2BjfLj9UrA6ejQ1CjZbCYglgAaaU%3D&reserved=0)
-  - adding layer to rootfs: [https://adaptivesupport.amd.com/s/question/0D52E00006iHveUSAS/add-metalayer-to-petalinux-project?language=en_US](https://nam02.safelinks.protection.outlook.com/?url=https%3A%2F%2Fadaptivesupport.amd.com%2Fs%2Fquestion%2F0D52E00006iHveUSAS%2Fadd-metalayer-to-petalinux-project%3Flanguage%3Den_US&data=05%7C02%7Cathakka5%40stevens.edu%7C06812fe230264ed3962408dd31b7deb4%7C8d1a69ec03b54345ae21dad112f5fb4f%7C0%7C0%7C638721387968938854%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=nazfIPzQcm4oh4HWOTEdLrKM%2BGN0GBJ6Eky2T%2FrE1LY%3D&reserved=0)
+   - zybo petalinux readme: [https://github.com/Digilent/Petalinux-Zybo/blob/master/README.md](https://github.com/Digilent/Petalinux-Zybo/blob/master/README.md)
+   - meta-sdr is an openembed layer that can be used in yocto: [https://github.com/balister/meta-sdr](https://github.com/balister/meta-sdr)
+   - adding layer to rootfs: [https://adaptivesupport.amd.com/s/question/0D52E00006iHveUSAS/add-metalayer-to-petalinux-project](https://adaptivesupport.amd.com/s/question/0D52E00006iHveUSAS/add-metalayer-to-petalinux-project?language=en_US)
   - Very similar project to mine, includes device drivers for handling PS-PL communication and custom GNU Radio blocks for Zynq-based architectures: [https://wiki.gnuradio.org/index.php/Zynq](https://wiki.gnuradio.org/index.php/Zynq)
 - Milestones
   - Milestone 1 (Linux):
@@ -294,7 +294,7 @@ gcc hackRFtest.c -o hack -I/usr/include -L/usr/lib -lhackrf
       - 
     - After taking the API calls needed from hackrf_transfer.c, writing I?Q data to a file, and then using an SCP call to transfer the raw I/Q file, a rudimentary interface can be written that will store a fixed amount of samples and send it over using the SSH tunnel. Find the command and a spectrogram from MATLAB of captured data in the FM radio band.
       - ```
-scp -oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedAlgorithms=+ssh-rsa root@192.168.1.161:/home/root/out.txt /home/somalianpirate/Documents/petalinux/hackRFTest/hackrf.txt
+scp -oHostKeyAlgorithms=+ssh-rsa -oPubkeyAcceptedAlgorithms=+ssh-rsa root@<zybo-ip>:/home/root/out.txt ~/hackrf.txt
 
 ```
       - 
