@@ -87,6 +87,10 @@ COPY project-files/config project-spec/configs/config
 COPY project-files/petalinux-image.bbappend project-spec/meta-user/recipes-core/images/petalinux-image.bbappend
 COPY project-files/system-user.dtsi project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
 
+# Remove the stock rootfs_config so petalinux-config generates a fresh one
+# (the Digilent default conflicts when libhackrf/rtl-sdr are added as NEW packages)
+RUN rm -f project-spec/configs/rootfs_config
+
 # ============================================================
 # Entrypoint
 # ============================================================
