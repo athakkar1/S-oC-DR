@@ -82,13 +82,9 @@ RUN cd project-spec/meta-sdr && \
 RUN sed -i 's/do_install:append/do_install_append/' \
     project-spec/meta-sdr/recipes-support/rtlsdr/rtl-sdr_git.bb
 
-# Apply SOCDR project config customizations
-COPY project-files/config project-spec/configs/config
+# Apply SOCDR customizations that don't require petalinux-config
 COPY project-files/petalinux-image.bbappend project-spec/meta-user/recipes-core/images/petalinux-image.bbappend
 COPY project-files/system-user.dtsi project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
-
-# Remove the stock rootfs_config so petalinux-config generates a fresh one
-RUN rm -f project-spec/configs/rootfs_config
 
 # Make builder own the project so it can write build/ at runtime
 RUN chown -R builder:builder /opt/Petalinux-Zybo

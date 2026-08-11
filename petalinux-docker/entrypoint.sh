@@ -4,7 +4,6 @@ set -e
 SETTINGS="/opt/pkg/petalinux/settings.sh"
 [ -f "$SETTINGS" ] || { echo "ERROR: Petalinux not found."; exit 1; }
 
-# Determine project root: prefer mounted project, fall back to baked-in
 if [ -f /project/config.project ]; then
     PROJ="/project"
 elif [ -f /project/Zybo/config.project ]; then
@@ -13,39 +12,34 @@ elif [ -f /opt/Petalinux-Zybo/Zybo/config.project ]; then
     PROJ="/opt/Petalinux-Zybo/Zybo"
 else
     echo "No Petalinux project found."
-    echo "Mount your project at /project or build the image with the baked-in project."
     cd /
     exec "$@"
     exit 0
 fi
 
-echo "Petalinux project: $PROJ"
-
-# Clean stale host-pathed build configs
-if [ -f "$PROJ/build/conf/bblayers.conf" ] && grep -q "/home/somalianpirate" "$PROJ/build/conf/bblayers.conf" 2>/dev/null; then
-    echo "Removing stale host-pathed build configs..."
-    rm -f "$PROJ/build/conf/bblayers.conf" "$PROJ/build/conf/local.conf" "$PROJ/build/conf/plnxtool.conf"
-    echo "You must re-run 'petalinux-config' before building."
-fi
-
-if [ -f "$PROJ/build/sanity_info" ] && grep -q "/home/somalianpirate" "$PROJ/build/sanity_info" 2>/dev/null; then
-    echo "WARNING: Stale build artifacts detected."
-    echo "Run: rm -rf $PROJ/build/"
-fi
-
-if [ ! -f "$PROJ/build/conf/bblayers.conf" ]; then
-    echo "Run 'petalinux-config' to generate the build configuration."
-fi
-
 cd "$PROJ"
-
-# Source Petalinux
 source "$SETTINGS"
 
 echo ""
-echo "Petalinux 2017.4 ready."
-echo "Next: petalinux-config   (interactive, one-time setup)"
-echo "      petalinux-build"
+echo "=== SOCDR Petalinux 2017.4 ==="
+echo ""
+echo "1. petalinux-config"
+echo "   Linux Components Selection -> u-boot -> ext-local-src"
+echo "   External u-boot local source settings -> \${TOPDIR}/../components/ext_sources/u-boot-digilent"
+echo "   Image Packaging Configuration -> Root filesystem type -> SD"
+echo "   Yocto Settings -> User Layers -> 0 -> \${PROOT}/project-spec/meta-sdr"
+echo "   Yocto Settings -> User Layers -> 1 -> /opt/pkg/petalinux/components/yocto/source/arm/layers/meta-qt4"
+echo "   Exit to save"
+echo ""
+echo "2. petalinux-build"
+echo ""
+echo "3. After build works, add to project-spec/configs/rootfs_config:"
+echo "   CONFIG_libhackrf=y"
+echo "   CONFIG_rtl-sdr=y"
+echo ""
+echo "4. petalinux-build          (full build with SDR packages)"
+echo ""
+echo "5. petalinux-package --boot --force --fsbl images/linux/zynq_fsbl.elf --fpga images/linux/system_wrapper.bit --u-boot"
 echo ""
 
 exec "$@"
