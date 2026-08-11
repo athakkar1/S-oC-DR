@@ -1,0 +1,7 @@
+*.log
+*.tar.gz
+*.tar
+__pycache__
+build/
+images/
+.DS_Store
